@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.baszczyk.intentioapp.data.for_dead_headers
 import com.baszczyk.intentioapp.data.fromWhomMap
 import com.baszczyk.intentioapp.data.intents
