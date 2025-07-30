@@ -31,42 +31,66 @@ class ConfiguratorViewModel : ViewModel() {
 
     fun setIntentType(type: IntentType) {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(type = type)
+            _uiState.value = _uiState.value.copy(
+                intentElements = _uiState.value.intentElements.copy(
+                    type = type
+                )
+            )
         }
     }
 
     fun setIntentDateAndHourType(date: LocalDate, hour: Hour, mass: Mass) {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(date = date, hour = hour, mass = mass)
+            _uiState.value = _uiState.value.copy(
+                intentElements = _uiState.value.intentElements.copy(
+                    date = date,
+                    hour = hour,
+                    mass = mass
+                )
+            )
         }
     }
 
     fun setIntentKind(kind: IntentKind) {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(kind = kind)
+            _uiState.value = _uiState.value.copy(
+                intentElements = _uiState.value.intentElements.copy(
+                    kind = kind
+                )
+            )
         }
     }
 
     fun setIntentHeader(header: String) {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(header = header)
+            _uiState.value = _uiState.value.copy(
+                intentElements = _uiState.value.intentElements.copy(
+                    header = header
+                )
+            )
         }
     }
 
     fun setCurrentRegex() {
-        val header = _uiState.value.header ?: ""
+        val header = _uiState.value.intentElements.header ?: ""
         val currentRegex = "\\[(.*?)]".toRegex().findAll(header).map { it.groupValues[1] }.toList()
         _uiState.value = _uiState.value.copy(currentRegex = currentRegex)
     }
 
     fun checkIfHeaderHasRegex(): Boolean {
         setCurrentRegex()
-        return _uiState.value.regexList.any { regex -> _uiState.value.header?.contains(regex) == true }
+        return _uiState.value.regexList.any { regex ->
+            _uiState.value.intentElements.header?.contains(regex) == true
+        }
     }
 
     fun setIntentFromWhom(fromWhom: String) {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(fromWhom =  fromWhom)
+            _uiState.value = _uiState.value.copy(
+                intentElements = _uiState.value.intentElements.copy(
+                    fromWhom = fromWhom
+                )
+            )
         }
     }
 
@@ -103,7 +127,7 @@ class ConfiguratorViewModel : ViewModel() {
     }
 
     private fun resolveIntentHeaders() =
-        when(_uiState.value.kind) {
+        when(_uiState.value.intentElements.kind) {
             IntentKind.FOR_THE_DEAD -> for_dead_headers
             IntentKind.SUPPLICATORY -> supplicator_headers
             IntentKind.THANKSGIVING -> thanksqiving_headers
@@ -111,18 +135,22 @@ class ConfiguratorViewModel : ViewModel() {
         }
 
     fun resolveNextPageAfterDate() =
-        if(_uiState.value.type == IntentType.GREGORIAN) Pages.CONTENT else Pages.KIND
+        if(_uiState.value.intentElements.type == IntentType.GREGORIAN) Pages.CONTENT else Pages.KIND
 
     fun setIntentOrderer(firstName: String, name: String, email: String) {
         viewModelScope.launch {
             val orderer = Person(firstName, name, email)
-            _uiState.value = _uiState.value.copy(orderer = orderer)
+            _uiState.value = _uiState.value.copy(
+                intentElements = _uiState.value.intentElements.copy(
+                    orderer = orderer
+                )
+            )
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun createAndSendIntent() {
-        with(_uiState.value) {
+        with(_uiState.value.intentElements) {
             val intent = Intent(
                 type = type,
                 mass = mass,

@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,8 +24,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.baszczyk.intentioapp.domain.model.Person
 import com.baszczyk.intentioapp.presentation.components.BorderCard
+import com.baszczyk.intentioapp.presentation.screen.configurator.ConfiguratorUiState
 import com.baszczyk.intentioapp.presentation.screen.configurator.ConfiguratorViewModel
+import com.baszczyk.intentioapp.ui.theme.Dimension
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -37,95 +41,127 @@ fun SummaryPage(
     val scope = rememberCoroutineScope()
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(8.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(Dimension.medium),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(1f)
-        ) {
-            BorderCard(
-                onCardClick = {
-
-                }
-            ) {
-                Text(
-                    text = "Parafia Św. Urszuli Ledóchowskiej\nw Częstochowie",
-                    fontWeight = FontWeight.Thin,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                        .padding(top = 8.dp, bottom = 16.dp)
-                        .padding(horizontal = 16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceAround
-                ) {
-                    Text(
-                        text = ("Intencja " + state.type?.text)
-                    )
-                    Text(
-                        text = (state.date?.dayOfMonth.toString() + " " + state.date?.month?.name + " " + state.date?.year),
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = state.hour?.value ?: "",
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = state.header ?: "",
-                        fontStyle = FontStyle.Italic
-                    )
-
-                    Text(
-                        text = "od " + state.fromWhom
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-            BorderCard(
-                onCardClick = {
-                    scope.launch {
-                        pagerState.animateScrollToPage(Pages.ORDERER.ordinal)
+        Column {
+            IntentCard(
+                item = state.intentElements,
+                onCardClick = {}
+            )
+            Spacer(modifier = Modifier.height(Dimension.medium))
+            state.intentElements.orderer?.let {
+                OrdererCard(
+                    orderer = it,
+                    onCardClick = {
+                        scope.launch {
+                            pagerState.animateScrollToPage(Pages.ORDERER.ordinal)
+                        }
                     }
-                }
-            ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth().padding(32.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceAround
-                ) {
-                    Text(
-                        text = (state.orderer?.firstName ?: "")
-                    )
-                    Text(
-                        text = (state.orderer?.name ?: "")
-                    )
-                    Text(
-                        text = state.orderer?.email ?: ""
-                    )
-                }
+                )
             }
         }
+        OrderIntentButton {
+            scope.launch {
+                pagerState.animateScrollToPage(Pages.PAYMENT.ordinal)
+                viewModel.createAndSendIntent()
+            }
+        }
+    }
+}
 
-        OutlinedButton(
-            onClick = {
-                scope.launch {
-                    pagerState.animateScrollToPage(Pages.PAYMENT.ordinal)
-                    viewModel.createAndSendIntent()
-                }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            shape = ShapeDefaults.Small
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun IntentCard(
+    item: ConfiguratorUiState.IntentElements,
+    onCardClick: () -> Unit
+) {
+    BorderCard(
+        onCardClick = onCardClick
+    ) {
+        ParishCard()
+        Column(
+            modifier = Modifier.fillMaxWidth()
+                .padding(
+                    top = Dimension.medium,
+                    bottom = Dimension.big
+                )
+                .padding(
+                    horizontal = Dimension.big
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceAround
         ) {
             Text(
-                text = "ZAMÓW INTENCJĘ"
+                text = ("Intencja " + item.type?.text)
+            )
+            Text(
+                text = (item.getFormatDate()),
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = item.hour?.value ?: "",
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = item.header ?: "",
+                fontStyle = FontStyle.Italic
+            )
+
+            Text(
+                text = "od " + item.fromWhom
             )
         }
+    }
+}
+
+@Composable
+fun OrdererCard(
+    orderer: Person,
+    onCardClick: () -> Unit
+) {
+    BorderCard(
+        onCardClick = onCardClick
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Dimension.large),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceAround
+        ) {
+            Text(text = orderer.firstName)
+            Text(text = orderer.name)
+            Text(text = orderer.email)
+        }
+    }
+}
+
+@Composable
+fun ColumnScope.ParishCard() {
+    Text(
+        text = "Parafia Św. Urszuli Ledóchowskiej\nw Częstochowie",
+        fontWeight = FontWeight.Thin,
+        modifier = Modifier
+            .padding(Dimension.medium)
+            .align(Alignment.CenterHorizontally)
+    )
+}
+
+@Composable
+fun OrderIntentButton(
+    onClick: () -> Unit
+) {
+    OutlinedButton(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth(),
+        shape = ShapeDefaults.Small
+    ) {
+        Text(
+            text = "ZAMÓW INTENCJĘ"
+        )
     }
 }

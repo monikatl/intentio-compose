@@ -71,7 +71,7 @@ fun IntentBottomSheet(
 fun IntentCard(viewModel: ConfiguratorViewModel) {
 
     Card {
-        Text(text = viewModel.uiState.value.type?.text.toString())
+        Text(text = viewModel.uiState.value.intentElements.type?.text.toString())
     }
 }
 

@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.baszczyk.intentioapp.presentation.components.BorderCard
 import com.baszczyk.intentioapp.presentation.components.OutlinedTextInput
 import com.baszczyk.intentioapp.presentation.screen.configurator.ConfiguratorViewModel
+import com.baszczyk.intentioapp.ui.theme.Dimension
 import kotlinx.coroutines.launch
 
 @Composable
@@ -47,8 +48,8 @@ fun ContentPage(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .padding(Dimension.medium),
+            verticalArrangement = Arrangement.spacedBy(Dimension.medium)
         ) {
             items(state.headers) { header ->
                 BorderCard(
@@ -66,7 +67,7 @@ fun ContentPage(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp)
+                            .padding(Dimension.medium)
                     ) {
                         Text(text = header)
                     }
@@ -78,7 +79,7 @@ fun ContentPage(
 
     if(showAddDialog) {
         AdditionalContentInfoDialog(
-            header = state.header ?: "",
+            header = state.intentElements.header ?: "",
             labels = state.currentRegex,
             inputText = inputText,
             onInputTextValueChange = { inputText = it },
