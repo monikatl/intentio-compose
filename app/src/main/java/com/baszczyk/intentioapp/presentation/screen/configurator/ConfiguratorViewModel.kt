@@ -11,6 +11,7 @@ import com.baszczyk.intentioapp.data.masses
 import com.baszczyk.intentioapp.data.regex
 import com.baszczyk.intentioapp.data.supplicator_headers
 import com.baszczyk.intentioapp.data.thanksqiving_headers
+import com.baszczyk.intentioapp.datastore.DataStoreManager
 import com.baszczyk.intentioapp.domain.model.Content
 import com.baszczyk.intentioapp.domain.model.Hour
 import com.baszczyk.intentioapp.domain.model.Intent
@@ -25,7 +26,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-class ConfiguratorViewModel : ViewModel() {
+class ConfiguratorViewModel(private val dataStoreManager: DataStoreManager) : ViewModel() {
     private val _uiState = MutableStateFlow(ConfiguratorUiState())
     val uiState: StateFlow<ConfiguratorUiState> = _uiState.asStateFlow()
 
@@ -161,5 +162,5 @@ class ConfiguratorViewModel : ViewModel() {
         }
     }
 
-
+    fun showDescriptions() = dataStoreManager.settingsFlow
 }

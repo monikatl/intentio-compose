@@ -65,4 +65,5 @@ dependencies {
     implementation(libs.ui)
 
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.datastore.preferences)
 }

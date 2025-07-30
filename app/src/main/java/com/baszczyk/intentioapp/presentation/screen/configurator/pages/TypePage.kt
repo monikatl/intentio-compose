@@ -18,6 +18,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -39,6 +40,7 @@ fun TypePage(
     pagerState: PagerState
 ) {
     val scope = rememberCoroutineScope()
+    val showDescription = viewModel.showDescriptions().collectAsState(false)
 
     LazyColumn(
         modifier = Modifier
@@ -51,12 +53,14 @@ fun TypePage(
         items(IntentType.entries) { item ->
             IntentTypeItem(
                 item = item,
+                showDescription = showDescription.value,
                 onChoseButtonClick = {
                     viewModel.setIntentType(item)
                     scope.launch {
                         pagerState.animateScrollToPage(Pages.DATE.ordinal)
                     }
-                }
+                },
+                onShowDescriptionValueChange = { viewModel.showDescriptions() }
             )
         }
     }
@@ -65,9 +69,11 @@ fun TypePage(
 @Composable
 fun IntentTypeItem(
     item: IntentType,
-    onChoseButtonClick: () -> Unit
+    showDescription: Boolean,
+    onChoseButtonClick: () -> Unit,
+    onShowDescriptionValueChange: () -> Unit
 ) {
-    val showDescription = remember { mutableStateOf(true) }
+
     BorderCard(
         onCardClick = onChoseButtonClick
     )  {
@@ -84,7 +90,7 @@ fun IntentTypeItem(
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.Monospace
                 )
-                if(showDescription.value) {
+                if(showDescription) {
                     Column(
                         modifier = Modifier.padding(10.dp)
                     ) {
@@ -105,7 +111,7 @@ fun IntentTypeItem(
                 }
             }
             IconButton(
-                onClick = { showDescription.value = !showDescription.value },
+                onClick = onShowDescriptionValueChange,
                 content = {
                     Icon(
                         imageVector = Icons.Default.Info,
