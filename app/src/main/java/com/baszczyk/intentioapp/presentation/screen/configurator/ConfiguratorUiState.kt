@@ -2,7 +2,6 @@ package com.baszczyk.intentioapp.presentation.screen.configurator
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.baszczyk.intentioapp.domain.model.Hour
 import com.baszczyk.intentioapp.domain.model.IntentKind
 import com.baszczyk.intentioapp.domain.model.IntentType
 import com.baszczyk.intentioapp.domain.model.Mass
@@ -22,7 +21,7 @@ data class ConfiguratorUiState (
         val type: IntentType? = IntentType.SINGLE,
         val kind: IntentKind = IntentKind.SUPPLICATORY,
         val date: LocalDate? = null,
-        val hour: Hour? = null,
+        val hour: String? = null,
         val mass: Mass? = null,
         val header: String? = null,
         val fromWhom: String? = null,

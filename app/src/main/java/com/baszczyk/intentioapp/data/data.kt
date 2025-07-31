@@ -3,34 +3,35 @@ package com.baszczyk.intentioapp.data
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.baszczyk.intentioapp.domain.model.Content
-import com.baszczyk.intentioapp.domain.model.Hour
 import com.baszczyk.intentioapp.domain.model.Intent
 import com.baszczyk.intentioapp.domain.model.IntentKind
 import com.baszczyk.intentioapp.domain.model.IntentType
 import com.baszczyk.intentioapp.domain.model.Mass
 import com.baszczyk.intentioapp.domain.model.MassDay
+import com.baszczyk.intentioapp.domain.model.MassPattern
 import com.baszczyk.intentioapp.domain.model.Person
 import java.time.LocalDate
 
-val hours = listOf(
-    Hour("7:00"),
-    Hour("17:00"),
-    Hour("18:00"),
-    Hour("9:00"),
-    Hour("10:30"),
-    Hour("12:00"),
+@RequiresApi(Build.VERSION_CODES.O)
+val patternMasses = listOf(
+    MassPattern("7:00", MassDay.ORDINARY_DAY),
+    MassPattern("17:00", MassDay.ORDINARY_DAY),
+    MassPattern("18:00", MassDay.ORDINARY_DAY),
+    MassPattern("18:00", MassDay.FEAST),
+    MassPattern("7:00", MassDay.FEAST),
+    MassPattern("9:00", MassDay.FEAST),
+    MassPattern("10:30", MassDay.FEAST),
+    MassPattern("12:00", MassDay.FEAST),
 )
 
 @RequiresApi(Build.VERSION_CODES.O)
 val masses = listOf(
-    Mass(Hour("7:00"), LocalDate.now(), MassDay.ORDINARY_DAY),
-    Mass(Hour("17:00"), LocalDate.now(), MassDay.ORDINARY_DAY),
-    Mass(Hour("18:00"), LocalDate.now(), MassDay.ORDINARY_DAY),
-    Mass(Hour("18:00"), LocalDate.now(), MassDay.FEAST),
-    Mass(Hour("7:00"), LocalDate.now(), MassDay.FEAST),
-    Mass(Hour("9:00"), LocalDate.now(), MassDay.FEAST),
-    Mass(Hour("10:30"), LocalDate.now(), MassDay.FEAST),
-    Mass(Hour("12:00"), LocalDate.now(), MassDay.FEAST),
+    Mass(LocalDate.of(2025, 5, 25), patternMasses[0]),
+    Mass(LocalDate.of(2025, 5, 26), patternMasses[0]),
+    Mass(LocalDate.of(2025, 5, 27), patternMasses[0]),
+    Mass(LocalDate.of(2025, 5, 28), patternMasses[0]),
+    Mass(LocalDate.of(2025, 5, 29), patternMasses[0]),
+    Mass(LocalDate.of(2025, 5, 30), patternMasses[0]),
 )
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -48,7 +49,7 @@ val intents = mutableListOf(
     ),
     Intent(
         type = IntentType.SINGLE,
-        mass = masses[0],
+        mass = masses[1],
         content = Content(
             kind = IntentKind.SUPPLICATORY,
             header = "O Boże błogosławieństwo",

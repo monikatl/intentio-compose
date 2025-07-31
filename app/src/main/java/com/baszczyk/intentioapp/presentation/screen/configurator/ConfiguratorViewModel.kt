@@ -13,7 +13,6 @@ import com.baszczyk.intentioapp.data.supplicator_headers
 import com.baszczyk.intentioapp.data.thanksqiving_headers
 import com.baszczyk.intentioapp.datastore.DataStoreManager
 import com.baszczyk.intentioapp.domain.model.Content
-import com.baszczyk.intentioapp.domain.model.Hour
 import com.baszczyk.intentioapp.domain.model.Intent
 import com.baszczyk.intentioapp.domain.model.IntentKind
 import com.baszczyk.intentioapp.domain.model.IntentType
@@ -40,7 +39,7 @@ class ConfiguratorViewModel(private val dataStoreManager: DataStoreManager) : Vi
         }
     }
 
-    fun setIntentDateAndHourType(date: LocalDate, hour: Hour, mass: Mass) {
+    fun setIntentDateAndHourType(date: LocalDate, hour: String, mass: Mass) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
                 intentElements = _uiState.value.intentElements.copy(

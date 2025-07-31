@@ -17,6 +17,10 @@ navigationCompose = "2.9.2"
 navigationComposeJvmstubs = "2.9.2"
 ui = "1.8.3"
 roomRuntimeAndroid = "2.7.2"
+firebase-bom = "32.7.0"
+google-services = "4.4.1"
+firebase-database = "20.3.1"
+firebase-firestore = "24.10.3"
 
 [libraries]
 accompanist-insets = { module = "com.google.accompanist:accompanist-insets", version.ref = "accompanistInsets" }
@@ -43,9 +47,13 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
 androidx-navigation-compose-jvmstubs = { group = "androidx.navigation", name = "navigation-compose-jvmstubs", version.ref = "navigationComposeJvmstubs" }
 ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 androidx-room-runtime-android = { group = "androidx.room", name = "room-runtime-android", version.ref = "roomRuntimeAndroid" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
+firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebase-firestore" }
+firebase-database-ktx = { group = "com.google.firebase", name = "firebase-database-ktx", version.ref = "firebase-database" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 

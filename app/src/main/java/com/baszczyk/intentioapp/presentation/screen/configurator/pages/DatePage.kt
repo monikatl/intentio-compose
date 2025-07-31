@@ -45,7 +45,7 @@ fun DatePage(
         items(state.masses) { mass ->
             BorderCard (
                 onCardClick = {
-                    viewModel.setIntentDateAndHourType(mass.date, mass.hour, mass)
+                    viewModel.setIntentDateAndHourType(mass.date, mass.massPattern.hour, mass)
                     scope.launch {
                         pagerState.animateScrollToPage(viewModel.resolveNextPageAfterDate().ordinal)
                     }
@@ -57,8 +57,8 @@ fun DatePage(
                            .padding(8.dp),
                        horizontalArrangement = Arrangement.SpaceBetween
                    ) {
-                       Text(text = mass.date.dayOfMonth.toString() + " " + mass.date.month.name + " " + mass.date.year)
-                       Text(text = mass.hour.value)
+                       Text(text = mass.getFormatDate())
+                       Text(text = mass.massPattern.hour)
                    }
                }
             )

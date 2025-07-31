@@ -1,14 +1,14 @@
 package com.baszczyk.intentioapp.domain.model
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import java.time.LocalDate
 
 data class Mass (
-    val hour: Hour,
     val date: LocalDate,
-    val day: MassDay
-)
-
-enum class MassDay {
-    ORDINARY_DAY,
-    FEAST
+    val massPattern: MassPattern
+) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getFormatDate() = date.dayOfMonth.toString() + " " + date.month?.name + " " + date.year
 }
+

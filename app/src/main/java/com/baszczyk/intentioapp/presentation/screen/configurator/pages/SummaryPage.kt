@@ -103,7 +103,7 @@ fun IntentCard(
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = item.hour?.value ?: "",
+                text = item.mass?.massPattern?.hour ?: "",
                 fontWeight = FontWeight.Bold
             )
             Text(

@@ -70,9 +70,9 @@ fun IntentItem(intent: Intent) {
                modifier = Modifier.fillMaxWidth(),
                horizontalArrangement = Arrangement.SpaceBetween
            ) {
-               Text(text = intent.mass?.date?.dayOfMonth.toString() + " " + intent.mass?.date?.month?.name + " " + intent.mass?.date?.year)
+               Text(text = intent.mass?.getFormatDate() ?: "")
                Text(
-                   text = intent.mass?.hour?.value ?: "",
+                   text = intent.mass?.massPattern?.hour ?: "",
                )
            }
            HorizontalDivider()
