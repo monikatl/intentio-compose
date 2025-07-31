@@ -45,7 +45,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text(selectedDestination.label) },
+                title = { Text(selectedDestination.label.uppercase()) },
                 navigationIcon = {
                     if(currentRoute == "configurator")
                     IconButton(

@@ -21,6 +21,8 @@ firebase-bom = "32.7.0"
 google-services = "4.4.1"
 firebase-database = "20.3.1"
 firebase-firestore = "24.10.3"
+adaptiveLayoutAndroid = "1.1.0"
+material3AdaptiveAndroid = "1.0.0-alpha06"
 
 [libraries]
 accompanist-insets = { module = "com.google.accompanist:accompanist-insets", version.ref = "accompanistInsets" }
@@ -50,6 +52,8 @@ androidx-room-runtime-android = { group = "androidx.room", name = "room-runtime-
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebase-firestore" }
 firebase-database-ktx = { group = "com.google.firebase", name = "firebase-database-ktx", version.ref = "firebase-database" }
+androidx-adaptive-layout-android = { group = "androidx.compose.material3.adaptive", name = "adaptive-layout-android", version.ref = "adaptiveLayoutAndroid" }
+androidx-material3-adaptive-android = { group = "androidx.compose.material3", name = "material3-adaptive-android", version.ref = "material3AdaptiveAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
