@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.adaptive.ListDetailPaneScaffold
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,12 +17,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.calculateListDetailPaneScaffoldState
+import androidx.compose.material3.adaptive.layout.AnimatedPane
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
+import androidx.compose.material3.adaptive.navigation.NavigableListDetailPaneScaffold
+import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,8 +33,10 @@ import com.baszczyk.intentioapp.presentation.screen.settings.groups.ApplicationS
 import com.baszczyk.intentioapp.presentation.screen.settings.groups.ConfiguratorSettings
 import com.baszczyk.intentioapp.presentation.screen.settings.groups.ParishDataSettings
 import com.baszczyk.intentioapp.presentation.screen.settings.model.SettingsGroup
+import com.baszczyk.intentioapp.presentation.screen.settings.model.SettingsGroupItem
 import com.baszczyk.intentioapp.presentation.screen.settings.model.settings
 import com.baszczyk.intentioapp.ui.theme.Dimension
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -44,34 +45,47 @@ fun SettingsScreen() {
 
     val viewModel = koinInject<SettingsViewModel>()
 
-    var selectedSetting by remember { mutableStateOf<SettingsGroup?>(null) }
-    val scaffoldState =  calculateListDetailPaneScaffoldState()
+    val scaffoldNavigator = rememberListDetailPaneScaffoldNavigator<SettingsGroupItem>()
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = Dimension.large)
+            .padding(horizontal = Dimension.big)
     ) {
-        ListDetailPaneScaffold(
-            scaffoldState = scaffoldState,
+        NavigableListDetailPaneScaffold(
+            navigator = scaffoldNavigator,
             listPane = {
-                LazyColumn {
-                    items(settings) { item ->
-                        SettingsGroupItem(
-                            label = item.title,
-                            description = item.description
-                        ) { selectedSetting = item.group }
+                AnimatedPane {
+                    LazyColumn {
+                        items(settings) { item ->
+                            SettingsGroupItem(
+                                label = item.title,
+                                description = item.description
+                            ) {
+                                scope.launch {
+                                    scaffoldNavigator.navigateTo(
+                                        ListDetailPaneScaffoldRole.Detail,
+                                        item
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             },
             detailPane = {
-                when (selectedSetting) {
-                    SettingsGroup.PARISH_DATA -> ParishDataSettings()
-                    SettingsGroup.CONFIGURATOR -> ConfiguratorSettings(viewModel)
-                    SettingsGroup.APPLICATION -> ApplicationSettings()
-                    else -> Text("Wybierz ustawienie")
+                AnimatedPane {
+                    scaffoldNavigator.currentDestination?.contentKey?.let { selectedSetting ->
+                        when (selectedSetting.group) {
+                            SettingsGroup.PARISH_DATA -> ParishDataSettings()
+                            SettingsGroup.CONFIGURATOR -> ConfiguratorSettings(viewModel)
+                            SettingsGroup.APPLICATION -> ApplicationSettings()
+                        }
+                    }
                 }
-            }
+            },
         )
     }
 }
