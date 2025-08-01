@@ -1,5 +1,6 @@
 package com.baszczyk.intentioapp.presentation.screen.settings.groups.parish
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,6 +32,9 @@ import com.baszczyk.intentioapp.domain.model.MassDay
 import com.baszczyk.intentioapp.domain.model.MassPattern
 import com.baszczyk.intentioapp.presentation.components.BasicOutlinedButton
 import com.baszczyk.intentioapp.presentation.components.BorderCard
+import com.baszczyk.intentioapp.presentation.screen.settings.groups.parish.components.AddMassDialog
+import com.baszczyk.intentioapp.presentation.screen.settings.groups.parish.components.EditDialogElements
+import com.baszczyk.intentioapp.presentation.screen.settings.groups.parish.components.EditParishDataDialog
 import com.baszczyk.intentioapp.ui.theme.Dimension
 import org.koin.androidx.compose.koinViewModel
 
@@ -40,6 +44,31 @@ fun ParishDataSettings() {
     val viewModel: ParishDataViewModel = koinViewModel()
     val state by viewModel.uiState.collectAsState()
 
+    val openAddDialog = remember { mutableStateOf<MassDay?>(null) }
+    val openEditDialog = remember { mutableStateOf<EditDialogElements?>(null) }
+
+    if(openAddDialog.value != null) {
+        AddMassDialog(
+            onDismissRequest = { openAddDialog.value = null },
+            onConfirmation = { massPattern ->
+                openAddDialog.value = null
+                viewModel.addMassPattern(massPattern)
+            },
+            dialogTitle = "Dodaj nową Mszę Św.",
+            massDay = openAddDialog.value!!
+        )
+    }
+
+    if(openEditDialog.value != null) {
+        EditParishDataDialog(
+            dialogTitle = openEditDialog.value!!.label,
+            currentName = openEditDialog.value!!.value,
+            onDismissRequest = { openEditDialog.value = null}
+        ) {
+            viewModel.editParishData(openEditDialog.value!!.label, it)
+        }
+    }
+
     Column(
         modifier = Modifier
             .padding(Dimension.small),
@@ -48,23 +77,44 @@ fun ParishDataSettings() {
         state.parish?.let {
             ParishDataCard(
                 label = "Nazwa parafii",
-                value = it.name
+                value = it.name,
+                onEditIconClick = {
+                    openEditDialog.value = EditDialogElements("Nazwa parafii", it.name)
+                }
             )
             ParishDataCard(
                 label = "Adres parafii",
-                value = it.address
+                value = it.address,
+                onEditIconClick = {
+                    openEditDialog.value = EditDialogElements("Adres parafii", it.address)
+                }
             )
             ParishDataCard(
                 label = "Proboszcz",
-                value = it.parishPriest.getFullName()
+                value = it.parishPriest.getFullName(),
+                onEditIconClick = {
+                    openEditDialog.value = EditDialogElements("Proboszcz", it.parishPriest.getFullName())
+                }
             )
             MassesGroup(
                 label = "Msze Św. w niedziele i święta",
-                masses = it.massesPattern.filter { mass -> mass.day == MassDay.FEAST }
+                masses = it.massesPattern.filter { mass -> mass.day == MassDay.FEAST },
+                onAddButtonClick = {
+                    openAddDialog.value = MassDay.FEAST
+                },
+                onItemDelete = { massPattern ->
+                    viewModel.deleteMassPattern(massPattern)
+                }
             )
             MassesGroup(
                 label = "Msze Św. w dni powszednie",
-                masses = it.massesPattern.filter { mass -> mass.day == MassDay.ORDINARY_DAY }
+                masses = it.massesPattern.filter { mass -> mass.day == MassDay.ORDINARY_DAY },
+                onAddButtonClick = {
+                    openAddDialog.value = MassDay.ORDINARY_DAY
+                },
+                onItemDelete = { massPattern ->
+                    viewModel.deleteMassPattern(massPattern)
+                }
             )
         }
     }
@@ -73,13 +123,15 @@ fun ParishDataSettings() {
 @Composable
 fun ParishDataCard(
     label: String,
-    value: String
+    value: String,
+    onEditIconClick: () -> Unit
 ) {
     var isEditMode by remember { mutableStateOf(false) }
 
     BorderCard(
        onCardClick = {
            isEditMode = !isEditMode
+           onEditIconClick()
        }
     ) {
         Column(
@@ -135,7 +187,9 @@ fun LabelTextField(
 @Composable
 fun MassesGroup(
     label: String,
-    masses: List<MassPattern>
+    masses: List<MassPattern>,
+    onAddButtonClick: () -> Unit,
+    onItemDelete: (MassPattern) -> Unit
 ) {
     var isEditMode by remember { mutableStateOf(false) }
     var showWarningDialog by remember { mutableStateOf(false) }
@@ -161,14 +215,15 @@ fun MassesGroup(
                 items(masses) { mass ->
                     MassChip(
                         hour = mass.hour,
-                        isEditMode = isEditMode
+                        isEditMode = isEditMode,
+                        onDeleteClick = { onItemDelete(mass) }
                     )
                 }
             }
             if(isEditMode) {
                 BasicOutlinedButton(
                     label = "dodaj",
-                    onClick = { },
+                    onClick = onAddButtonClick,
                 )
             }
         }
@@ -178,7 +233,8 @@ fun MassesGroup(
 @Composable
 fun MassChip(
     hour: String,
-    isEditMode: Boolean
+    isEditMode: Boolean,
+    onDeleteClick: () -> Unit
 ) {
     InputChip(
         onClick = { },
@@ -189,10 +245,14 @@ fun MassChip(
                 Icon(
                     Icons.Default.Close,
                     contentDescription = "Localized description",
-                    Modifier.size(InputChipDefaults.AvatarSize)
+                    Modifier
+                        .size(InputChipDefaults.AvatarSize)
+                        .clickable { onDeleteClick() }
                 )
             }
         },
     )
 }
+
+
 
