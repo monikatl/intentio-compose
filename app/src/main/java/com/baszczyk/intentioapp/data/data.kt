@@ -9,6 +9,7 @@ import com.baszczyk.intentioapp.domain.model.IntentType
 import com.baszczyk.intentioapp.domain.model.Mass
 import com.baszczyk.intentioapp.domain.model.MassDay
 import com.baszczyk.intentioapp.domain.model.MassPattern
+import com.baszczyk.intentioapp.domain.model.Parish
 import com.baszczyk.intentioapp.domain.model.Person
 import java.time.LocalDate
 
@@ -188,5 +189,13 @@ val regex = listOf(
     "[imię]",
     "[imię i nazwisko]",
     "[nazwa]"
+)
+
+@RequiresApi(Build.VERSION_CODES.O)
+val parish = Parish(
+    name = "Parafia Św. Urszuli Ledóchowskiej w Częstochowie",
+    address = "ul. Gajowa 39/41",
+    parishPriest = Person("Mikołaj" ,"Węgrzyn", "mw@gmail.com"),
+    massesPattern = patternMasses
 )
 

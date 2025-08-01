@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.HorizontalDivider
@@ -31,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baszczyk.intentioapp.presentation.screen.settings.groups.ApplicationSettings
 import com.baszczyk.intentioapp.presentation.screen.settings.groups.ConfiguratorSettings
-import com.baszczyk.intentioapp.presentation.screen.settings.groups.ParishDataSettings
+import com.baszczyk.intentioapp.presentation.screen.settings.groups.parish.ParishDataSettings
 import com.baszczyk.intentioapp.presentation.screen.settings.model.SettingsGroup
 import com.baszczyk.intentioapp.presentation.screen.settings.model.SettingsGroupItem
 import com.baszczyk.intentioapp.presentation.screen.settings.model.settings
@@ -52,7 +54,7 @@ fun SettingsScreen() {
         modifier = Modifier
             .fillMaxSize()
             .padding(top = Dimension.large)
-            .padding(horizontal = Dimension.big)
+            .padding(horizontal = Dimension.big),
     ) {
         NavigableListDetailPaneScaffold(
             navigator = scaffoldNavigator,
