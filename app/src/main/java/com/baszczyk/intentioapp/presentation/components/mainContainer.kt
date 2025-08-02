@@ -3,7 +3,10 @@ package com.baszczyk.intentioapp.presentation.components
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -23,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.baszczyk.intentioapp.presentation.navigation.ActivationDestination
 import com.baszczyk.intentioapp.presentation.navigation.AppNavigation
 import com.baszczyk.intentioapp.presentation.navigation.Destination
 
@@ -30,7 +34,7 @@ import com.baszczyk.intentioapp.presentation.navigation.Destination
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(modifier: Modifier = Modifier) {
+fun MainContainer (modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val startDestination = Destination.HOME
 
@@ -41,32 +45,44 @@ fun MainScreen(modifier: Modifier = Modifier) {
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
 
+    val showBottomBar = currentRoute in listOf(
+        Destination.HOME.route,
+        Destination.SETTINGS.route,
+    )
+
+    val showLogoutButton = currentRoute in listOf(
+        Destination.HOME.route,
+        Destination.SETTINGS.route
+    )
+
     Scaffold(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text(selectedDestination.label.uppercase()) },
+                title = { Text(currentRoute?.uppercase() ?: "") },
                 navigationIcon = {
                     if(currentRoute == "configurator")
                     IconButton(
                         onClick = {
-                            navController.navigateUp()
+                            navController.popBackStack()
                         }
                     ) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "back")
                     }
                 },
                 actions = {
-                    IconButton(
-                        onClick = { showIntentionBottomSheet.value = !showIntentionBottomSheet.value }
-                    ) {
-                        Icon(imageVector = Icons.Default.Search, contentDescription = "show")
+                    if(showLogoutButton) {
+                        IconButton(
+                            onClick = { navController.navigate(route = ActivationDestination.LOGIN.route)  }
+                        ) {
+                            Icon(imageVector = Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "show")
+                        }
                     }
                 }
             )
         },
         bottomBar = {
-            if(currentRoute != "configurator") {
+            if(showBottomBar) {
                 NavigationBar(windowInsets = NavigationBarDefaults.windowInsets) {
                     Destination.entries.forEachIndexed { index, destination ->
                         NavigationBarItem(
@@ -88,6 +104,6 @@ fun MainScreen(modifier: Modifier = Modifier) {
             }
         }
     ){ contentPadding ->
-        AppNavigation(contentPadding, navController)
+        AppNavigation(navController, contentPadding)
     }
 }

@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -31,6 +32,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.baszczyk.intentioapp.presentation.navigation.ActivationDestination
 import com.baszczyk.intentioapp.presentation.screen.settings.groups.ApplicationSettings
 import com.baszczyk.intentioapp.presentation.screen.settings.groups.ConfiguratorSettings
 import com.baszczyk.intentioapp.presentation.screen.settings.groups.parish.ParishDataSettings
@@ -43,7 +46,9 @@ import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(
+    navHostController: NavHostController
+) {
 
     val viewModel = koinInject<SettingsViewModel>()
 
@@ -53,8 +58,8 @@ fun SettingsScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = Dimension.large)
-            .padding(horizontal = Dimension.big),
+            .padding(top = Dimension.medium)
+            .padding(horizontal = Dimension.medium),
     ) {
         NavigableListDetailPaneScaffold(
             navigator = scaffoldNavigator,

@@ -1,4 +1,4 @@
-package com.baszczyk.intentioapp.presentation.screen.configurator
+package com.baszczyk.intentioapp.presentation.screen.activation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
@@ -30,24 +31,26 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.baszczyk.intentioapp.presentation.screen.configurator.pages.ContentPage
-import com.baszczyk.intentioapp.presentation.screen.configurator.pages.DatePage
-import com.baszczyk.intentioapp.presentation.screen.configurator.pages.FromWhomPage
-import com.baszczyk.intentioapp.presentation.screen.configurator.pages.KindPage
-import com.baszczyk.intentioapp.presentation.screen.configurator.pages.OrdererPage
-import com.baszczyk.intentioapp.presentation.screen.configurator.pages.Pages
-import com.baszczyk.intentioapp.presentation.screen.configurator.pages.PaymentPage
-import com.baszczyk.intentioapp.presentation.screen.configurator.pages.SummaryPage
-import com.baszczyk.intentioapp.presentation.screen.configurator.pages.TypePage
+import com.baszczyk.intentioapp.presentation.navigation.Destination
+import com.baszczyk.intentioapp.presentation.screen.activation.pages.MassPatternsPage
+import com.baszczyk.intentioapp.presentation.screen.activation.pages.Pages
+import com.baszczyk.intentioapp.presentation.screen.activation.pages.ParishAddressPage
+import com.baszczyk.intentioapp.presentation.screen.activation.pages.ParishNamePage
+import com.baszczyk.intentioapp.presentation.screen.activation.pages.ParishPriestPage
+import com.baszczyk.intentioapp.presentation.screen.activation.pages.SummaryPage
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ConfiguratorPager(
-    pagerState: PagerState,
-    viewModel: ConfiguratorViewModel,
+fun ActivationScreen(
     navHostController: NavHostController
 ) {
-    val pageState = remember { mutableIntStateOf(0) }
+
+    val viewModel = koinViewModel<ActivationViewModel>()
+    val pagerState = rememberPagerState(pageCount = {
+        Pages.entries.size
+    })
+    val pageState = remember { mutableIntStateOf(Pages.NAME.ordinal) }
     val state by viewModel.uiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -95,7 +98,7 @@ fun ConfiguratorPager(
             verticalAlignment = Alignment.CenterVertically
         ) {
             repeat(pagerState.pageCount) { iteration ->
-                val color = resolveClipColor(pagerState, iteration, state)
+                val color = resolveClipColor(pagerState, iteration)
                 Box(
                     modifier = Modifier
                         .padding(4.dp)
@@ -106,7 +109,6 @@ fun ConfiguratorPager(
             }
         }
 
-        // Strzałka w prawo
         IconButton(
             onClick = {
                 if (pagerState.currentPage < pagerState.pageCount - 1) {
@@ -127,8 +129,7 @@ fun ConfiguratorPager(
 
 fun resolveClipColor(
     pagerState: PagerState,
-    iteration: Int,
-    state: ConfiguratorUiState
+    iteration: Int
 ): Color {
     return if (pagerState.currentPage == iteration) Color.DarkGray else Color.LightGray
 }
@@ -137,18 +138,38 @@ fun resolveClipColor(
 @Composable
 fun ResolvePage(
     index: Int,
-    viewModel: ConfiguratorViewModel,
+    viewModel: ActivationViewModel,
     pagerState: PagerState,
     navHostController: NavHostController
 ) {
+    val scope = rememberCoroutineScope()
+
     when(index) {
-        Pages.TYPE.ordinal -> TypePage(viewModel, pagerState)
-        Pages.DATE.ordinal -> DatePage(viewModel, pagerState)
-        Pages.KIND.ordinal -> KindPage(viewModel, pagerState)
-        Pages.CONTENT.ordinal -> ContentPage(viewModel, pagerState)
-        Pages.FROM_WHOM.ordinal -> FromWhomPage(viewModel, pagerState)
-        Pages.ORDERER.ordinal -> OrdererPage(viewModel, pagerState)
-        Pages.SUMMARY.ordinal -> SummaryPage(viewModel, pagerState)
-        Pages.PAYMENT.ordinal -> PaymentPage(viewModel, pagerState, navHostController)
+        Pages.NAME.ordinal -> ParishNamePage {
+            scope.launch {
+                pagerState.animateScrollToPage(Pages.ADDRESS.ordinal)
+            }
+        }
+        Pages.ADDRESS.ordinal -> ParishAddressPage {
+            scope.launch {
+                pagerState.animateScrollToPage(Pages.PARISH_PRIEST.ordinal)
+            }
+        }
+        Pages.PARISH_PRIEST.ordinal -> ParishPriestPage {
+            scope.launch {
+                pagerState.animateScrollToPage(Pages.MASS_PATTERNS.ordinal)
+            }
+        }
+        Pages.MASS_PATTERNS.ordinal -> MassPatternsPage {
+            scope.launch {
+                pagerState.animateScrollToPage(Pages.SUMMARY.ordinal)
+            }
+        }
+        Pages.SUMMARY.ordinal -> SummaryPage(viewModel) {
+            scope.launch {
+                navHostController.navigate(Destination.HOME.route)
+            }
+        }
     }
 }
+

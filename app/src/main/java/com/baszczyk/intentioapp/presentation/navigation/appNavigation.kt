@@ -1,32 +1,59 @@
 package com.baszczyk.intentioapp.presentation.navigation
 
+import LoginScreen
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.baszczyk.intentioapp.presentation.screen.activation.ActivationScreen
 import com.baszczyk.intentioapp.presentation.screen.configurator.ConfiguratorScreen
 import com.baszczyk.intentioapp.presentation.screen.home.HomeScreen
 import com.baszczyk.intentioapp.presentation.screen.settings.SettingsScreen
+import com.baszczyk.intentioapp.presentation.screen.welcome.WelcomeScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavigation(
-    paddingValues: PaddingValues,
-    navController: NavHostController
+    navController: NavHostController,
+    paddingValues: PaddingValues
 ) {
-
     NavHost(
         navController = navController,
-        startDestination = Destination.HOME.route,
+        startDestination = ActivationDestination.WELCOME.route,
         modifier = Modifier.padding(paddingValues)
     ) {
-        composable(Destination.HOME.route) { HomeScreen() }
-        composable(Destination.CONFIGURATOR.route) { ConfiguratorScreen(navController) }
-        composable(Destination.SETTINGS.route) { SettingsScreen() }
+        activationGraph(navController)
+        mainGraph(navController)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun NavGraphBuilder.mainGraph(navController: NavHostController) {
+    composable(Destination.HOME.route) {
+        HomeScreen()
+    }
+    composable(Destination.CONFIGURATOR.route) {
+        ConfiguratorScreen(navController)
+    }
+    composable(Destination.SETTINGS.route) {
+        SettingsScreen(navController)
+    }
+}
+
+fun NavGraphBuilder.activationGraph(navController: NavHostController) {
+    composable(ActivationDestination.WELCOME.route) {
+        WelcomeScreen(navController)
+    }
+    composable(ActivationDestination.ACTIVATION.route) {
+        ActivationScreen(navController)
+    }
+    composable(ActivationDestination.LOGIN.route) {
+        LoginScreen(navController, { _, _ -> })
     }
 }
