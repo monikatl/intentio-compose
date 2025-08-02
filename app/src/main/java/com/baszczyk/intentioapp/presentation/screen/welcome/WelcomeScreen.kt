@@ -1,7 +1,6 @@
 package com.baszczyk.intentioapp.presentation.screen.welcome
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,8 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -44,17 +44,25 @@ fun WelcomeScreen(
             Text(
                 text = "Witaj w aplikacji do rezerwacji intencji!",
                 fontSize = 20.sp,
-                letterSpacing = 2.sp
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 2.sp,
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(32.dp))
             Text(
-                text = "Aby rozpocząć zarządzanie intencjami zarejestruj swoją parafię!"
+                text = "Aby rozpocząć zarządzanie intencjami zarejestruj swoją parafię!",
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(32.dp))
             BasicOutlinedButton(
-                label = "Zarejestruj parafię"
+                label = "Zarejestruj parafię".uppercase()
             ) {
                 navHostController.navigate(route = ActivationDestination.ACTIVATION.route)
+            }
+            BasicOutlinedButton(
+                label = "Zaloguj się".uppercase()
+            ) {
+                navHostController.navigate(route = ActivationDestination.LOGIN.route)
             }
         }
     }
