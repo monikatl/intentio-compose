@@ -1,32 +1,13 @@
 {
   "project_info": {
-    "project_number": "142460186532",
-    "project_id": "intentioapp-ac16a",
-    "storage_bucket": "intentioapp-ac16a.firebasestorage.app"
+    "project_number": "990319715400",
+    "project_id": "intentio-92252",
+    "storage_bucket": "intentio-92252.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:142460186532:android:5fd152712be1d7c4b39b31",
-        "android_client_info": {
-          "package_name": "com.baszczyk.intantioapp"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAampGhwy0TTQL-vkkUzPO8QVboUNn6r_g"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:142460186532:android:985497a7dc942efeb39b31",
+        "mobilesdk_app_id": "1:990319715400:android:ea16ebfbde09a13edca47d",
         "android_client_info": {
           "package_name": "com.baszczyk.intentioapp"
         }
@@ -34,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAampGhwy0TTQL-vkkUzPO8QVboUNn6r_g"
+          "current_key": "AIzaSyDbETIhUu0QsF_Oob3mcmRfu_mF638tBEY"
         }
       ],
       "services": {
